@@ -1,0 +1,29 @@
+
+
+  body {
+    font:Garamond, "Times New Roman" 
+   }
+
+th  {
+    border-top: 1px solid #ddd;
+  }
+
+
+  .center {
+    margin: auto;
+    width: 70%;
+    text-align:center
+}
+
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}

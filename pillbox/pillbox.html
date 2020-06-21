@@ -1,0 +1,638 @@
+
+
+<!doctype html> 
+
+<!-- 
+file: pillbox.htm for http://jorkke.github.io
+first version written by Jorma Kuha 17th June, 2020
+-->
+
+<html lang="en">
+
+<head>
+<link rel="stylesheet" type="text/css" href="../mystyle.css"> 
+<title>Jorkke's backyard</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="author" content="Jorma Kuha">
+<meta name="description" content="Jorkke's backyard">
+<meta name="keywords" content="Arduino, electronics, code, download">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+
+
+
+<body >
+
+<!--     
+    <p><br/><br/></p>
+
+    <hr style="width:100%;text-align:center;">          
+-->   
+
+<!-- for facebook's sharing icon -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="8n8AgRVO"></script>
+<!-- end facebook -->
+
+
+    <div class="center">  
+        <table>       
+            <tr>
+                <th style="text-align:center">
+                  <p style=text-align:center;font-size:x-large>Jorkke's Smart Pillbox:</p>
+                  <div style="text-align:center"> <img src="SmartPillBox.png" alt="Smart Pillboxr" title="Smart Pillbox" style="margin:5px;max-width:100%;height:auto"></div>
+                  <p style="text-align:center">Here you will find discussion on: </p>      
+                </th>
+            </tr>
+
+            <tr style="text-align:left">
+                <td>
+                    <ul>
+                        <li>
+                            <a href="#Usage"><b>Basic usage</b></a> - what the Smart Pillbox does and how to operate it.                            
+                        </li>
+                        <li>
+                            <a href="#Parts"><b>Parts list </b></a> - what do you need in order to build it.                            
+                        </li>
+
+                        <li>
+                            <a href="#Mechanical"><b>Aspects in mechanics</b></a> - Often the most time consuiming part. 
+                            How to build the box? How to get everything right? 
+                        </li>
+                        <li>
+                            <a href="#Electronics"><b>Electronic design</b></a> - what to connect and where? 
+                        </li>
+                        <li>
+                            <a href="#Software"><b>Software</b></a> - what the software to operate it looks like.                            
+                        </li>
+                        <li>
+                            <a href="#Future"><b>Improvement possibilities</b></a> - how could it be done even better.                            
+                        </li>
+                    </ul>
+                    <br/>                    
+                </td>
+<!--          
+    *****************
+    ** BASIC USAGE 
+    *****************
+-->
+            <tr>
+                <th style="text-align:center">
+                  <p id="Usage" style=text-align:center;font-size:x-large>Basic Usage</p>
+                  <!-- <p style="text-align:center">Projects on: </p>  -->
+                </th>
+            </tr>                   
+            <tr style="text-align:left">
+                <td>
+                    <p>
+                    <!-- > <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto"></img> <-->
+                    <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+                    Smart Pillbox knows when it is time for you to take your medicine, and reminds you in case you seem to forget. 
+                    It looks like you can see on the right  when opened - impressive, huh? :-) Yes, there is a tilt sensor on the cover of the box, and 
+                    therefore 
+                    the Arduino knows when was the last time the box was opened.   
+                    <br/> The main difference to using your mobile phone as a reminder is that this box alarms only when there is a need to - and that the 
+                    only way to turn off the reminder is to physically open the cover of the Pillbox. 
+                    </p>    
+                    <p>
+                    There is a small lcd-display, three leds and a turn-knob & a switch for entering data. The screws on the cover - 
+                     actually I am rather pleased to the "cyber-punkish" look they give to the box. 
+                    </p> 
+                    <div>
+                        I wrote the software for the box assuming that the medication is taken twice a day, on equal 12-hour intervals, but it can be easily
+                        customized for any individual needs. The basic usage of the box goes like this:                       
+                        <ul>
+                            <li>
+                                <b>When powering up</b> the box, the user must enter the remaining time (in hours and minutes) for the next 
+                                medication. This is done by turning the knob, and pushing the switch when the right number is shown on the lcd-screen.                                
+                            </li>
+                            <li>
+                                <b>When waiting for the next alarm, </b> the display shows not only the remaining time to the alarm, but also 
+                                the message "Don't Panic" with big, friendly letters :-) You can move the box around, open it etc. and 
+                                it will not get confused as long as the power is connected.  
+                            </li>
+                            <li>
+                                <b>Two hours before the alarm,</b> the yellow led turns on and the LCD-display shows the first warning message.
+                            </li>
+                            <li>
+                                <b>One hour before the alarm,</b> the yellow led starts to blink and the LCD-display shows the second warning message.
+                            </li>
+                            <li>
+                                <b>At the time of the alarm,</b> the red led turns on and the LCD-display shows the alarm message. The display starts to show 
+                                how much time has passed since the alarm. 
+                            </li>
+                            <li>
+                                <b>One hour after the alarm,</b> the red led starts to blink, the LCD-display shows the second alarm message, and the box starts to make a buzzing sound.
+                            </li>
+                            <li>
+                                <b>Two hours after the alarm,</b> the box gives up. The software resets itself, it does the power-up routine again, 
+                                and as a result, all the led's start to blink and the box expects the user to enter the time for the next alarm.
+                            </li>
+                        </ul>
+
+                        If the lid of the box is opened while any warning or alarm is active, it goes back to waiting for the next alarm, taking into account the time difference. Thus, 
+                        if you want to take your medicine every day at 9 AM & PM, and you take it a bit late in the evening - for example at 10 PM - it knows you were late and gives the next 
+                        alarm at the usual time, at 9 AM.                        
+                    </div>                     
+                    <br/>                    
+                </td>
+            </tr>
+<!--          
+    *****************
+    ** PARTS LIST
+    *****************
+-->
+            <tr>
+                <th style="text-align:center">
+                  <p id="Parts" style=text-align:center;font-size:x-large>Parts list</p>
+                </th>
+            </tr>                   
+            <tr style="text-align:left">
+                <td>
+                    <div>
+                        <!--
+                    <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto"></img>
+                    <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto"></img>    
+                    -->
+                    
+                    If you are not familiar with <a href="https://www.arduino.cc/">Arduino</a>, I highly recommend you to get familiar with it by purchasing the 
+                    <a href="https://store.arduino.cc/genuino-starter-kit">Arduino Starter Kit</a> which not only teaches you how to use the Arduino environment
+                    for application development, but also comes with most of the parts you need for the Smart Pillbox: 
+                    <ul>
+                        <li>
+                            <a href="https://store.arduino.cc/arduino-uno-rev3">The Arduino Uno</a> itself. 
+                        </li>
+                        <li>
+                            <a href="https://www.arduino.cc/en/Tutorial/HelloWorld"> A LCD1602 display</a>. If you purchase this separately, don't 
+                            buy the I2C-version unless you know what you are doing (the instructions below do not apply to it).
+
+                        </li>
+                        <li>
+                            <b>A 10K potentiometer</b> for adjusting the contrast of the LCD. I attached mine to the circuit board, but you might want to 
+                            consider adding it to the panel so that the user can adjust the contrast easily - but please note that the starter kit
+                            does not come with this kind of a panel-mountable potentiomenter. 
+                            
+                        </li>
+                        <li>
+                            <b>A tilt/switch sensor</b> for detecting when the lid of the box is opened.  
+                            
+                        </li>
+                        <li>
+                            <b>A piezo buzzer</b> for giving a buzz-sound when needed.                              
+                        </li>
+                        <li>
+                            <b>A few leds and resistors</b> - note that in order to install leds into the panel, you need to have the "collars" also. The Arduino 
+                            starter kit does not come with these collars. It might be a good idea to buy an assortment of leds and another assortment of resistors 
+                            which you could then use in your future projects also, instead of purchasing these separately for every project. 
+                        </li>
+                    </ul>
+                    
+                    <img src="pillbox_4.jpg" alt="Wooden Wine Bottle boxes from my local liquor store" title="Wooden Wine Bottle boxes from my local liquor store" 
+                    style="margin:5px;float:right;max-width:25%;height:auto">
+                    In addition to these, you need also:
+                    <ul>
+                        <li>
+                            <b>A suitable box</b> where you store your pills. I used a wooden wine-bottle box which I found from the local liquor store :-) They
+                            sell also two-bottle versions of these - I do find these boxes rather inspiring. Expect to see more projects based on them in the future!                            
+                        </li>
+                        <li>
+                            <b>Dupont-wires</b> for connections between the Arduino/LCD/your circuit board. You'll need both Male-Male and Male-Female - versions. 
+                            I did the mistake that I had only 20cm long versions available when building - those get the job done, but if you want a neat result
+                            using as little space as possible, you might want to have shorter 10cm long versions also. 
+                            <br/>
+                            Please note also that sometimes the easiest way to get a job done is to cut the Dupont-wire in half, and to solder the other 
+                            end directly where it is supposed to be. 
+                        </li>
+                        <li>
+                            <b>Male/Female Pin Header connectors.</b> You could solder all the wires, or you could use Dupont-wires and these connectors. 
+                            <br/>
+                            Sometimes it may be difficult to find out what exactly should you buy - if you go to a site selling electronics components such as 
+                            <a href="https://www.mouser.com">Mouser</a> for example and search for "Pin header", you get pages and pages of matches with different
+                            specifications. A good way to get started is to google for "Arduino pin header" for example, and that should guide you to the right direction.                            
+                        </li>
+                        <li>
+                            <b>A stripboard or a veroboard</b> where you build your (simple) circuit. Most of the connections into this board are related to 
+                            delivering either 5V voltage or the ground. In some cases this happens via a resistor - you can either solder those resistors
+                            into the board, or you could solder the resistors directly to the wires. Personally I used both approaches here. 
+                            <br/>
+                        </li>
+                        <li>
+                            <b>A potentiometer and a switch </b> to the panel which you'll be using for entering the hours and minutes. The idea is simple:
+                            A linear potentiometer can split the voltage between 0V and 5V into almost as many parts as you like. So if we want to enter the 
+                            value for minutes for example - we should be able to read a value between 0-59. That means we should be able to divide the 5V voltage
+                            into 60 separate "slots". A potentiometer can do just that (with a little help from Arduino's 10-bit AD-converter).                             
+                            <br/>
+                            While doing this project, I did not happen to have these parts at hand, so I "disassembled" an old soldering station and took these parts from there. 
+                            Unfortunately the switch was a "power switch" - meaning it stays in "off"-position, or in the "on"-position. That complicated the software a little bit, 
+                            as I had to ensure that the switch is in the "off"-position before starting to enter the numerical data. 
+                            <br/>
+                            What you actually want to have here is a <a href="https://en.wikipedia.org/wiki/Push_switch">push switch, a.k.a momentary switch</a>. The Arduino startup kit 
+                            comes with a few of those, but unfortunately they are meant to be attached to the circuit board. It is possible to use them also in the panel, if you 
+                            attach the circuit board right to the other side of the panel, but it is much easier to use a switch which is wired to the panel. These kinds of 
+                            switches are typically mounted to the panel with a nut. 
+                        </li>
+                       
+                    </ul>
+  
+                    </div>                     
+                    <br/>
+                </td>
+            </tr>
+
+<!--          
+    ************************
+    ** ASPECTS IN MECHANICS
+    ************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Mechanical" style=text-align:center;font-size:x-large>Aspects in mechanics</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        For me personally, dealing with mechanics is like using muscles that I did not know exist in my body while visiting the gym. For example:
+        <ul>
+            <li>
+                You measure where the leds should be in the cover, you mark their places with a pencil, you need 7mm holes so you pick up a 7mm drill bit - 
+                and as a result: the leds are not in a straight line :-(. This happened to me twice until I realized I have to ask for an advice from my >80 years old father, 
+                who has built a house, a sailing boat and, well, practically everything by himself. His advice: start drilling with a smaller drill bit, because it is more accurate. 
+                Once you have marked the proper place for the hole with such, then it is much more easier to drill with the actual drill bit to the same place. 
+                <img src="drillbit.jpeg" alt="Large drill bit" title="Large drill bit" style="margin:5px;float:right;max-width:15%;height:auto">                
+            </li>
+            
+            <li>
+                How do you create an opening in the cover for the lcd-display? For example: first you drill into the corners with a large ~20mm drill bit or like. Then you 
+                use a small saw - my pocket knife contained a suitable one. Then you use files
+                <img src="files.jpg" alt="Files" title="Files" style="margin:5px;float:left;max-width:15%;height:auto">
+                - get an assortment of these. 
+            </li>
+            <li>                
+                How do you attach the Arduino, the lcd-display, your own circuit board? You need nuts, screws and standoff-spacers - all size M3.
+                These are hard to find from usual hardware-stores, so it would be a good idea to order these beforehand. The standoff-spacers give
+                you also the possibility to place your own circuit board on top of Arduino (or vice versa) - it would be a good idea to think for a 
+                moment how you plan to place these before starting to assemble these.                                 
+            </li>
+            <li>
+                Sooner or later someone will pull your Smart Pillbox from the power wire. Attach it well enough so that it does not break loose as a result of this.                 
+            </li>
+            
+        </ul>
+         <img src="M3.jpg" alt="M3" title="M3" style="display:block;margin-left:auto;margin-right:auto;max-width:50%;height:auto">
+         </div>                     
+        
+        <br/>
+    </td>   
+</tr>
+
+<!--          
+    ************************
+    ** ELECTRONIC DESIGN
+    ************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Electronics" style=text-align:center;font-size:x-large>Electronic design</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        If you have the Arduino Starter Kit, most of the electronics design comes straight from the project 11 "Crystal Ball", which utilizes 
+        both the tilt sensor and the LCD screen. It would be a good idea to familiarize yourself with it before going further here. 
+        <br/>
+        As this project is so simple HW-design-wise, most of the "design" is just agreeing on the conventions on what goes where in Arduino's digital
+        and analog inputs/outputs, so that the software can be written accordingly. So let's get started with those conventions: 
+        <br/>
+        <br/>
+        <b>LCD screen in itself:</b>
+        <ul>
+            <li>
+                These connections are either to the 5V or ground, either directly or via a resistor. Create a veroboard or a stripboard for these purposes - 
+                taking the 5V & the Ground from the Arduino into a "power rail" that you have created into the stripboard with a pin header connector.  
+                Also, when attaching the LCD screen to the panel, remember which way it should go so that the text is not shown upside-down.
+            </li>
+            <li>
+                The LCD has 16 pins. Mine are numbered from 1 to 16. Connect the two outmost ones, pin 1 and pin 16, to the Ground.
+            </li>
+            <li>
+                Connect pin 5 ("RW") to the Ground.
+            </li>
+            <li>
+                Connect pin 2 (typically "Vcc" or "Vdd") to +5V (the text labels for the pins may vary).
+            </li>
+            <li>
+                Connect pin 15 ("LED+" or "A") first into a 220 ohm resistor, and from there to +5V.
+            </li>
+            <li>
+                Take a 10K potentiometer. It has three pins. Connect the outermost pins of the potentiometer to +5V and Ground, and the middle pin to LCD's pin 3 ("V0") - 
+                this is the contrast adjust.
+            </li>           
+        </ul>
+        <b>LCD and the Arduino:</b>
+        <ul>
+            <li>
+                Connect Arduino Digital Pin 2 to LCD Pin 14 ("D7").
+            </li>
+            <li>
+                Connect Arduino Digital Pin 3 to LCD Pin 13 ("D6").                
+            </li>
+            <li>
+                Connect Arduino Digital Pin 4 to LCD Pin 12 ("D5").                
+            </li>
+            <li>
+                Connect Arduino Digital Pin 5 to LCD Pin 11 ("D4").                
+            </li>
+            <li>
+                Connect Arduino Digital Pin 11 to LCD Pin 6 ("EN/E").                
+            </li>
+            <li>
+                Connect Arduino Digital Pin 12 to LCD Pin 4 ("RS").                
+            </li>
+        </ul>
+        <img src="tilt_sensor.png" alt="Tilt sensor connection" title="Tilt sensor connection" style="margin:5px;float:right;max-width:40%;height:auto">
+        <b>The Tilt sensor:</b>
+        <ul>
+            
+            <li>
+                <a href="https://www.arduino.cc/en/Tutorial/TiltSensor">Arduino's tutorial</a> mentions that the tilt sensor is from Assemtech, but the link
+                to the datasheet does not work anymore. Some detective work revealed that it is actually a 
+                <a href="https://www.digchip.com/datasheets/download_datasheet.php?id=1272620&part-number=RBS040100&type=prod">Comus RBS040100</a>. 
+                <br/>
+            </li>
+            <li>
+                Please note that this sensor has four pins. If you connect only two of those into your circuit, the results will be non-satisfactory. 
+                Please see the picture on the right for the correct way to connect, also utilizing a 10K resistor.                 
+            </li>
+            <li>
+                Thus the Tilt sensor is connected to the Arduino Digital Pin 6, as shown. 
+            </li>
+        </ul>
+        <b>The Piezo buzzer:</b>
+        <ul>
+            <li>
+                Connect one of the pins of the Piezo to Arduino Digital Pin 8, and the other pin to the ground. For more discussion on usage of the piezo, 
+                see project 6 "Light Theremin" in the Arduino Projects Book which comes with the Arduino Starter Kit. 
+            </li>
+        </ul>
+        <b>The LED's:</b>
+        <br/>
+        <br/>
+        For each LED, connect the shorter pin (the cathode) to the ground through a 220 Ohm resistor. For the anodes (the longer pins):
+        <br/>
+        <ul>
+            
+            
+            <li>
+                For the green LED: connect the anode to Arduino Digital Pin 13. 
+            </li>
+            <li>
+                For the yellow LED: connect the anode to Arduino Digital Pin 10. 
+            </li>
+            <li>
+                For the red LED: connect the anode to Arduino Digital Pin 9. 
+            </li>
+
+        </ul>
+        <b>The potentiometer for selecting  numerical data:</b>
+        <br/>
+        <br/>
+        The only available potentiometer I had was a 1K one, which worked fine for this purpose: 
+        <ul>
+            <li>Connect the two outermost pins of it to the ground and to the +5V power. </li>
+            <li>Connect the middle pin to Arduino's Analog Input A5.  </li>
+        </ul>
+
+        <img src="enter-switch.png" alt="Enter switch" title="Enter switch" style="margin:5px;float:right;max-width:20%;height:auto">
+        <b>The Enter-switch for entering numerical data:</b>
+        <br/>
+        <br/>
+        
+        I used a simple  on-off switch, but the same code and circuit works also for a momentary switch which should be preferred: 
+        <ul>
+            <li>Connect the first pin to +5V. </li>
+            <li>Connect the second pin to Arduino's Digital Pin 7 like you see on the image on the right, utilizing also the 10K resistor.  </li>
+        </ul>
+
+
+        <b>How it looks like:</b>
+
+        <br/>
+        <br/>
+        <img src="arduino.jpg" alt="Arduino" title="Arduino" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="board.jpg" alt="Stripboard" title="Stripboard" style="margin:5px;float:right;max-width:30%;height:auto">
+        <br/>
+        
+        On the left you can see the Arduino when mounted into its place. The Digital I/O slots are pretty well utilized,
+        whereas only one Analog slot is in use. The red and the blue wire give the +5V and the ground to the stripboard. 
+        <br/>
+        <br/>
+        On the right you can see the stripboard. On the bottom-left, the three wires and resistors connect the LED's to the ground. On top of them
+        you can see the tilt switch. The trimmer is for adjusting the contrast of the LCD, and the pin header shares the +5V voltage and the ground. 
+        <br/>
+        <br/>
+        <img src="empty_stripboard.jpg" alt="Empty stripboard" title="Empty stripboard" style="margin:5px;float:left;max-width:20%;height:auto">
+        <img src="empty_veroboard.jpg" alt="Empty veroboard" title="Empty veroboard" style="margin:5px;float:right;max-width:20%;height:auto">
+
+        I used a stripboard like you can see on the left for this project. Usually I choose veroboards like you can see on the right (the idea is that
+        you create your own circuits by cutting the stripes accordingly), but for something as simple as this, I considered the board on the left as more 
+        straightforward to use.       
+        
+        </div>                     
+        <br/>
+    </td>    
+</tr>
+
+<!--          
+    *************
+    ** Software
+    *************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Software" style=text-align:center;font-size:x-large>Software:</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        Software for the Smart Pillbox is rather straightforward. The most nontrivial aspects were:
+        <ul>
+            <li>
+                <b>How to measure time accurately.</b> The first idea that comes to mind usually is to utilize the delay-function, executing something like this:
+                <pre> <code>
+                while(1) // this loop executed every second
+                {
+                    delay(1000); // one second                    
+                    /* do stuff here... */
+                }
+                </code></pre>
+                However, this approach has the problem that although the delay-function execution lasts for one second, the rest of the loop takes time also, 
+                and thus the execution of the loop takes more than one second. A much better approach is to utilize the millis-function like this: 
+                <pre><code>
+                unsigned long previousTime = millis();                
+                while(1) // this loop executed every second
+                {
+                    while ((millis() - previousTime) &lt; 1000L){}; // one second
+                    previousTime = millis();                    
+                    /* do stuff here... */
+                }
+                </code></pre>
+                The <code>millis()</code> - function returns the number of milliseconds passed since the Arduino began running the current program as an 
+                <code> unsigned long int</code>, and it will overflow after approx. 50 days. This code handles also the overflow correctly.  
+                <br/>
+                <br/>
+            </li>
+
+            <li>
+                <b>How to measure analog input correctly.</b> The key aspects are: 
+                <ul>
+                    <li>
+                        Use a <code>delay(1)</code> or <code>delay(10)</code> after each Analog read.
+                    </li>
+                    <li>
+                        Use the <code>map()</code> -function provided by the Arduino environment for mapping the read values (between 0-1023) to the range
+                        you desire, like 0-23 or 0-59.
+                    </li>
+                    <li>
+                        Be prepared for errors - for example I found that in extreme conditions (room temperature over 30 degrees Celsius, plus 
+                        using a low-quality USB power supplly) the higher range of the read voltage values was in practice non-usable, so I had to 
+                        scale the map-function accordingly.
+                    </li>
+
+                </ul>    
+            </li>
+        </ul>
+
+        You can download the software <a href="pillbox.zip" download>from this link.</a> 
+         </div>                             
+        <br/>
+    </td>   
+</tr>
+
+<!--          
+    *****************************
+    ** Improvement possibilities
+    *****************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Future" style=text-align:center;font-size:x-large>Improvement possibilities:</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        Some ideas for further improvements:
+        <ul>
+            <li>
+                <b>Decreasing sensitivity of the Analog Inputs to disturbances.</b> 
+                It was a surprise to me how sensitive the analog inputs are to low-quality input power. 
+                With IPhone's USB charger the analog input worked  just fine, but with a cheap no-name USB charger it did not. 
+                I need to think about adding bypass capacitors or like.    
+                <br/>
+                <br/>
+            </li>
+
+            <li>
+                <b>Battery backed-up real time clock</b>, such as <a href="https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout/arduino-usage">DS3231</a>. 
+                This would allow the Smart Pillbox to recover from a power failure without configuring the alarm interval again.                 
+                <br/>
+                <br/>    
+            </li>
+        
+            <li>
+                <b>Make it prettier</b>. Good-quality woodwork is difficult at least for me. For example, take a look what the opening
+                for the LCD currently looks like: <br/>
+                <div class=center>
+                <img src="lcd3.png" alt="LCD close-up" title="LCD close-up" style="margin:5px;max-width:100%;height:auto">
+                <br/>
+                </div>
+                I did not have proper files at the time, and... anyways, in order to fix somethig like this, one technique could
+                be to add small wooden stripes around the display, kind of a "frame", to hide the irregularities. 
+                <br/><br/>
+                It's also a good idea not to attach your LCD-screen to the cover before you are done with the woodwork, as 
+                otherwise the sawdust may get into the display...                 
+            </li>
+
+        </ul>
+
+          </div>                             
+        <br/>
+    </td>   
+</tr>
+
+
+<tr >  
+    <th style="text-align:center">
+        <!-- 
+        <p  style=text-align:center;>Some metadata:</p>
+        -->
+    </th>
+</tr>       
+
+<tr style="text-align:center">                   
+                    <td>
+                        <br/>
+                        <!-- Facebook-share: -->
+                        <div style="display:inline-block;vertical-align:top">
+                        <div class="fb-share-button" data-href="http://jorkke.github.io/pillbox.html" data-layout="button" data-size="small">
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjorkke.github.io%2Fpillbox.html&amp;src=sdkpreparse" 
+                        class="fb-xfbml-parse-ignore">Share</a></div>
+                        </div>
+                        <!-- Twitter-share -->
+                        <div style="display:inline-block;vertical-align:top">
+                        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </div>
+
+                    </td>
+</tr>
+<tr style="text-align:center">
+    <td>First release of this page: June 21, 2020  </td>
+</tr>
+
+<tr style="text-align:center">
+    <td>        
+        <script>
+            (function reachOut() {
+                var s = '@'
+                    , n1 = 'jorkke.'
+                    , n2 = 'electrically'
+                    , k = 'aleeas.com'
+                    , e = n1 + n2 + s + k
+                    , l = '<a href=mailto:{{me@rescam.org}}>{{spam@fbi.gov}}</a>'.replace(/{{.+?(}})/g, e)
+                ;                
+                document.write("<div style=text-align:center>Contact me via email: " + l) + "</div>";                
+            })();
+        </script>
+      
+     <br/> <br/>
+     <em><a href="../index.html">Back to main page</a></em>      
+    </td>
+</tr>
+
+</table>
+</div>
+    
+</body>
+</html>
