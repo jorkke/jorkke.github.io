@@ -1,0 +1,403 @@
+
+
+<!doctype html> 
+
+<!-- 
+file:  https://jorkke.github.io/lifetracker/lifetracker.html
+first version written by Jorma Kuha in July, 2020
+-->
+
+<html lang="en">
+
+<head>
+<link rel="stylesheet" type="text/css" href="../mystyle.css"> 
+<title>Jorkke's backyard - The Life Tracker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="author" content="Jorma Kuha">
+<meta name="description" content="Jorkke's backyard - The Life Tracker">
+<meta name="keywords" content="Arduino, electronics, code, download, Prowl, iPhone, push, notification">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+
+<body >
+
+<!--     
+    <p><br/><br/></p>
+
+    <hr style="width:100%;text-align:center;">          
+-->   
+
+<!-- for facebook's sharing icon -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="8n8AgRVO"></script>
+<!-- end facebook -->
+
+
+    <div class="center">  
+        <table>       
+            <tr>
+                <th style="text-align:center">
+                  <p style=text-align:center;font-size:x-large>Jorkke's Life Tracker:</p>
+                  <p style=text-align:center;font-size:large>Sends an alarm into your iPhone if your loved one, who lives far away,  has been still for too long.</p>                    
+                  <div style="text-align:center"> <img src="LT-ulkoa.jpg" alt="Life Tracker" title="Life Tracker" style="margin:5px;max-width:100%;height:auto"></div>
+                  <p style="text-align:center">Here you will find discussion on: </p>      
+                </th>
+            </tr>
+
+            <tr style="text-align:left">
+                <td>
+                    <ul>
+                        <li>
+                            <a href="#Usage"><b>Basic usage</b></a> - what the Life Tracker does and how to operate it.                            
+                        </li>
+                        <li>
+                            <a href="#Parts"><b>Parts list </b></a> - what do you need in order to build it.                            
+                        </li>
+
+                        <li>
+                            <a href="#Mechanical"><b>Aspects in mechanics</b></a> - Often the most time consuiming part. 
+                            How to build the box? How to get everything right? 
+                        </li>
+                        <li>
+                            <a href="#Electronics"><b>Electronic design</b></a> - what to connect and where? 
+                        </li>
+                        <li>
+                            <a href="#Software"><b>Software</b></a> - what the software to operate it looks like.                            
+                        </li>
+                        <li>
+                            <a href="#Future"><b>Improvement possibilities</b></a> - how could it be done even better.                            
+                        </li>
+                    </ul>
+                    <br/>                    
+                </td>
+<!--          
+    *****************
+    ** BASIC USAGE 
+    *****************
+-->
+            <tr>
+                <th style="text-align:center">
+                  <p id="Usage" style=text-align:center;font-size:x-large>Basic Usage</p>
+                </th>
+            </tr>                   
+            <tr style="text-align:left">
+                <td>
+                    <p>
+                    <!--  <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+                    -->
+                    
+                    <b>The problem:</b> your loved one, such as your father in his 80's, is living alone far away. How do you know everything is OK? How does he know that if he can't get out of the bed due to a seizure, you will know and can call for help?
+                    <br/>
+                    <br/>                                                            
+                        
+                        
+                    <b>The idea is simple:</b> attach an Passive Infrared (PIR) motion sensor into an Arduino with WiFi. The non-trivial aspect
+                    is the communication from the Arduino into your iPhone. There are multiple solutions on the internet based on:
+                        <ul>
+                            <li> Arduino acting as a simple web-server - but this requires configuring the home router ("port forwarding" or "port mapping"), making the installation procedure something else than "plug and play".                               
+                            </li>
+                            <li>
+                                Sending email from the Arduino - but this requires that you can connect into a server where you can execute your own php-scripts for example. Typically this is done by paying monthly fees to a web hosting service. 
+                            </li>
+                        </ul>
+                    None of these solutions appealed to me. I wanted the the device to be operational just on the basis of knowing the WiFi network name and password, and I did not want to pay monthly web hosting fees just for this. 
+                    <br/>
+                    <br/>
+                <img src="iphone-1641.PNG" alt="Alarm on the iPhone" title="Alarm on the iPhone" style="margin:5px;float:right;max-width:30%;height:auto">                                          
+                    
+                    My solution was to utilize <a href= "https://www.prowlapp.com/">Prowl</a>, a push notification client for iOS. It is available on Apple's App Store, has been available since 2009, costs $3 - a one-time fee only - and offers an API based on HTTP GET/POST -methods to send your own notifications, also from Arduino. 
+                    <br/>
+                    <br/>
+                    The basic usage of the box goes like this: 
+                     <ul>
+                        <li> <b>Plug it in</b> for electricity. It powers up, connects to WiFi and starts to track movement around it.
+                        If it does not detect movement for 9 hours, it sends an alarm via Prowl.                                       
+                        </li>
+                        <li>
+                        <b>Send an alarm manually</b> with the switch in the panel. Typically you would do this for testing purposes, or if for some reason you are unable to call for help otherwise but are still able to reach the switch. 
+                        </li>
+                    </ul>
+                    When an alarm is sent - either due to idleness or due to pressing the emergency switch - it comes to the iPhone as you can see on the image on the right. 
+            
+                    <br/>
+                    <br/> 
+                    
+                    That's it.
+                    <br/>
+                    <br/>                                                            
+   
+<!--          
+    *****************
+    ** PARTS LIST
+    *****************
+-->
+            <tr>
+                <th style="text-align:center">
+                  <p id="Parts" style=text-align:center;font-size:x-large>Parts list</p>
+                </th>
+            </tr>                   
+            <tr style="text-align:left">
+                <td>
+                    <div>
+                        <!--
+                    <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto"></img>
+                    <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto"></img>    
+                    -->
+                    
+                    The first aspect is to choose which Arduino-board to use. There are multiple choises available at the time of writing this with WiFi already built-in:  <a href="https://store.arduino.cc/arduino-uno-wifi-rev2">Arduino Uno WiFi Rev2</a>,  
+                    <a href="https://store.arduino.cc/arduino-mkr-wifi-1010">Arduino MKR WiFi 1010</a>, 
+                    <a href="https://store.arduino.cc/arduino-nano-33-iot">Arduino Nano 33 IoT</a> and others. I chose the <a href="https://store.arduino.cc/arduino-uno-wifi-rev2">Arduino Uno WiFi Rev2</a> just because unlike the others, it is based on 5V architecture and the only LCD-displays I happened to have on stock were 5V-versions. There are ways to <a href= "https://www.codrey.com/electronic-circuits/hack-your-16x2-lcd/">hack these into 3.3V-versions</a>, but I chose to 
+                    order some 3.3V versions for the future and continue with the  <a href="https://store.arduino.cc/arduino-uno-wifi-rev2">Arduino Uno WiFi Rev2</a> and a 5V LCD for now. 
+                    <br/>
+                    For a more detailed discussion on the LCD-display, see the  <a href="../pillbox/pillbox.html">Smart Pillbox</a> -project from me.   
+                    <br/>
+                    <br/>                         
+                    In the heart of this project is the HC-SR501 PIR Motion Sensor. Get familiar with <a href="https://www.makerguides.com/hc-sr501-arduino-tutorial/">Benne de Bakker's excellent tutorial</a> regarding it. It is very important that you examine the effect of adjusting the two trimmers and the one trigger-jumper. As a starting point for your experiments, you might want to set the jumper into "repeating trigger"-position, and adjust the trimmers into their middle positions.  
+                    <br/>
+                    <br/>  
+                    As my mechanical skills are so limited, I am always looking for suitable ready-made boxes for my projects. I found
+                    the one I used here from a local discount-store selling cheap chinese stuff - this was in the same shelf as
+                    the diaries for teenage-girls etc :-) and they charged me 7 euros for it. I would never come up with something 
+                    as cute as this just by myself, and it should please the eye of my 87-year old father as well.
+                    <br/>
+                    <br/>  
+                    In addition to these, you need the usual stuff - Dupont-wires, pin-headers, one 220 Ohm resistor for the LCD-LED, a switch, 
+                    one 10K resistor for the switch, one 10K-20K trimmer-potentiometer for the LCD contrast adjustment, one stripboard for the power-rail, power supply, M3 screws &amp;  nuts and also M2 screws &amp; nuts for the HC-SR501. When all is thrown together, it looks like this: 
+                        
+                                     <div style="text-align:center"> <img src="LT-sisalta.png" alt="Life Tracker under the hood" title="Life Tracker under the hood" style="margin:5px;max-width:100%;height:auto"></div>    
+                        
+  
+                    </div>                     
+                    <br/>
+                </td>
+            </tr>
+
+<!--          
+    ************************
+    ** ASPECTS IN MECHANICS
+    ************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Mechanical" style=text-align:center;font-size:x-large>Aspects in mechanics</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        For me personally, this was again the most frustrating part. For example:
+        <ul>
+            <li>
+                 I bought a <a href="https://m.motonet.fi/fi/tuote/789150/Bosch-PST-800-PEL-pistosaha-530-W">jigsaw</a> and used it to 
+                cut the openings for the sensor and the LCD, yet the cuts
+                look as clumsy as always. I do need to come up with some other approach
+                here.    
+            </li>
+            
+            <li>
+                I bought a few 9V 1A power supplies from China, and I'm happy with their quality (other than the 1 meter cord is really too short). But: 
+                currently I drill a hole to the cover and attach the power cord to the Arduino through that. That leads into an amateurish look - 
+                first of all, the hole is always too big (otherwise the plug doesn't go through it) and secondly, I haven't yet been able to come
+                up with a nice solution to make the wire "pull-safe". <br/>
+            </li>        
+        </ul>
+        It may be that for my next project, I'll build the box myself from scratch, just in order to learn how to do it right.             
+    
+        
+        </div>
+        <br/>        
+    </td>   
+</tr>
+
+<!--          
+    ************************
+    ** ELECTRONIC DESIGN
+    ************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Electronics" style=text-align:center;font-size:x-large>Electronic design</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            This was simple - mostly coming up with conventions on what goes where so that the software can be written. The
+            LCD is connected in a similar manner as in my project for the <a href="../pillbox/pillbox.html">Smart Pillbox</a>, see the details 
+            from there. 
+            <br/>
+            <br/>
+            Other than that,
+            <ul>
+                <li>
+                     HC-SR501 is connected to Arduino Digital Pin 6.
+                </li>
+            
+                <li>
+                     The manual alarm switch is connected to Arduino Digital Pin 7.
+                </li>        
+                <li>
+                     The stripboard shares the +5V and the ground. The two resistors are attached directly to the related wires. 
+                </li>        
+            </ul>                        
+
+        It has taken me a while to learn how to solder properly - perhaps it is interesting for the reader if I share my "lessons learned" here. For example, let us consider how to solder the pin header to the LCD (which came without it):
+        <br/>
+        <img src="lcdpin.jpg" alt="LCD & pin header" title="LCD & pin header" style="margin:5px;float:left;max-width:30%;height:auto">             
+        As a first step, I attached the pin header to the breadboard in order to establish a "stand" so that the pin header meets the LCD in a 90-degree angle, as you can see on the left.
+        <img src="lcdpindone.png" alt="LCD & pin header done" title="LCD & pin header done" style="margin:5px;float:right;max-width:30%;height:auto">            
+        I place some support underneath the LCD so that it does not wiggle. 
+        <br/>
+        
+        I used soldering wire which was one millimeter in diameter (Sn96,5Ag3Cu0,5) and soldering station temperature set to 400 degrees Celcius. The result looks like you can see on the right - I must say that I have seen much worse results done by me in the past! After having done something like this, I always check with a multimeter that there are no shorts between the joints
+
+        <br/> 
+        <br/>
+        A good summary of a proper soldering technique is given by this picture: 
+        
+        <div style="text-align:center"> <img src="2Eivij8.jpg" alt="Proper soldering techniques" title="Proper soldering techniques" style="margin:5px;max-width:55%;height:auto"></div>    
+            
+        
+        </div>                     
+        <br/>
+    </td>    
+</tr>
+
+<!--          
+    *************
+    ** Software
+    *************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Software" style=text-align:center;font-size:x-large>Software:</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+            The only nontrivial aspect in the software is communication with the outside world via WiFi. I used <a href= "https://www.prowlapp.com/">Prowl</a> as it gave me just what I needed and nothing more. However, your needs could be different - 
+            for example, perhaps you would like to communicate with an Android-based phone instead of an iPhone. Therefore, here are 
+            some alternatives I am currently aware of and considered while implementing the Life Tracker:
+
+            <ul>
+                <li>
+                     <a href= "https://www.prowlapp.com/">Prowl</a> - iOS only (iPhone, iPad or iPod touch). One-way communication only. The app costs $3 (a one-time fee). It is based on Apple's push notification service. According to the <a href= "https://www.prowlapp.com/faq.php">Prowl FAQ</a>, Apple states rather explicitly that the Push messages are not guaranteed to be delivered or to be delivered fast. The API is based on HTTP GET/POST methods. You can send also variable information via it, such as measurement values etc. 
+                </li>
+            
+                <li> <a href= "https://www.pushingbox.com/">PushingBox</a> - Similar idea as with Prowl, but offers a wider selection of services: 
+                    not only to iPhone (via Prowl), but also to Android-phones, Windows-phones, emails, twitter-tweets, Smartwatches etc. 
+                    Based on HTTP GET/POST methods and offers also an email-API.
+                </li>        
+                <li>
+                     <a href= "https://www.arduino.cc/en/IoT/HomePage">Arduino IoT Cloud</a> - This looks definitely interesting, giving also secure 2-way communication. However, it requires an Arduino MKR board which I did not use for this project. 
+                </li>        
+            </ul>                        
+            
+            With the rise of IoT, these kinds of notification-systems are raising interest, and there seem to be several small "one-man" companies offering similar services for a small fee. Interesting things might happen in this area in the near future. 
+
+        <br/>
+        <br/>
+        You can download the Life Tracker -software <a href="LifeTracker_noPSWDs.ino" download>from this link.</a> Please note that all WiFI-network information, as well as Prowl API keys, have been removed, so you need to add those. 
+         </div>                             
+        <br/>
+    </td>   
+</tr>
+
+<!--          
+    *****************************
+    ** Improvement possibilities
+    *****************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Future" style=text-align:center;font-size:x-large>Improvement possibilities:</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+            <!--
+        <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
+        <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
+        -->
+        I am actually happy with the product as it is - it does its intended job well, and I don't see need for more functionality. 
+        <br/>
+        <br/>I like that there are no LED's (which tend to capture your attention without providing much information) -  the LCD is more "discrete" than a bunch of LED's. 
+        <br/>    
+        </br/>If someone would try to make this into a commercial product then a solution into the WiFi password &amp; Prowl API keys would be needed (other than hardcoding them into the software).
+        <br/>
+        The neatest approach I have seen so far was based on the device connecting into an iPhone via Bluetooth and acquiring the WiFi network information from there. That was cool. 
+        
+          </div>                             
+        <br/>
+    </td>   
+</tr>
+
+
+<tr >  
+    <th style="text-align:center">
+        <!-- 
+        <p  style=text-align:center;>Some metadata:</p>
+        -->
+    </th>
+</tr>       
+
+<tr style="text-align:center">                   
+                    <td>
+                        <br/>
+                        <!-- Facebook-share: -->
+                        <div style="display:inline-block;vertical-align:top">
+
+                        <div class="fb-share-button" data-href="https://jorkke.github.io/lifetracker/lifetracker.html" data-layout="button" 
+                        data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fjorkke.github.io%2Flifetracker%2Flifetracker.html&amp;src=sdkpreparse" 
+                        class="fb-xfbml-parse-ignore">Share</a></div>                        
+
+                        </div>
+                        <!-- Twitter-share -->
+                        <div style="display:inline-block;vertical-align:top">
+                        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </div>
+
+                    </td>
+</tr>
+<tr style="text-align:center">
+    <td>First release of this page: July 5, 2020  </td>
+</tr>
+
+<tr style="text-align:center">
+    <td>        
+        <script>
+            (function reachOut() {
+                var s = '@'
+                    , n1 = 'jorkke.'
+                    , n2 = 'electrically'
+                    , k = 'aleeas.com'
+                    , e = n1 + n2 + s + k
+                    , l = '<a href=mailto:{{me@rescam.org}}>{{spam@fbi.gov}}</a>'.replace(/{{.+?(}})/g, e)
+                ;                
+                document.write("<div style=text-align:center>Contact me via email: " + l) + "</div>";                
+            })();
+        </script>
+      
+     <br/> <br/>
+     <em><a href="../index.html">Back to main page</a></em>      
+    </td>
+</tr>
+
+</table>
+</div>
+    
+</body>
+</html>
