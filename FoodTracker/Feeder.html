@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>     
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />        
+    </head>
+   
+    <body>
+    <h1>Access the Food Tracker Google-sheet on cloud: </h1>
+    <form>
+        <button onclick="deleteLatestRow()">Delete the latest row from the sheet</button><br><br>    
+        <button onclick="getCodesWithServings()">Get the food codes which have default serving sizes defined</button><br><br>    
+        <button onclick="getTodaysKcal()">Get todays kcal so far</button><br><br>  
+
+        StoreCalibrationValue: <input type="number" name="StoreCalibrationValue" id="StoreCalibrationValue"><br>   
+        
+        <button onclick="storeCalibrationValue()">Store calibration value</button><br><br>    
+        
+
+         foodCode: <input type="text" name="foodCode" id="foodCode"><br>
+         foodAmount: <input type="number" name="foodAmount" id="foodAmount"><br>
+         <button onclick="addRow()">Add row to sheet</button>
+    </form>
+    <script>
+        // the script ID - if you change this to point to a different script, make sure to have the "/exec?" at the end of the string still!
+        var basicUrl = "https://script.google.com/macros/s/<!!! PUT YOUR SCRIPT ID HERE !!!>/exec?";          
+        
+        function deleteLatestRow()
+        {
+            var url = basicUrl + "DeleteFirstRow=DeleteFirstRow"; // dummy redundancy in parameters, does not matter    
+            window.open(url); 
+        }
+        
+        function getCodesWithServings()
+        {
+            var url = basicUrl + "GetCodesWithServings=GetCodesWithServings"; // dummy redundancy in parameters, does not matter                
+            window.open(url); 
+        }
+        
+        function getTodaysKcal()
+        {
+            var url = basicUrl + "GetTodaysKcal=GetTodaysKcal"; // dummy redundancy in parameters, does not matter            
+            window.open(url); 
+        }
+        
+        function storeCalibrationValue()
+        {
+            var fa = document.getElementById("StoreCalibrationValue").value;
+                        
+            var url = basicUrl + "StoreCalibrationValue=" + fa; 
+            window.open(url);            
+        }
+        
+        function addRow() {
+            
+            var fc = document.getElementById("foodCode").value;
+            var fa = document.getElementById("foodAmount").value;
+            
+            var url = basicUrl + "Code=" + fc + "&Amount_g=" + fa;      
+            window.open(url);
+        }    
+   
+    </script>
+    </body>
+</html>
