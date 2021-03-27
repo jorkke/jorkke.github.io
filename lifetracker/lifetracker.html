@@ -5,6 +5,7 @@
 <!-- 
 file:  https://jorkke.github.io/lifetracker/lifetracker.html
 first version written by Jorma Kuha in July, 2020
+
 -->
 
 <html lang="en">
@@ -69,6 +70,10 @@ first version written by Jorma Kuha in July, 2020
                         <li>
                             <a href="#Future"><b>Improvement possibilities</b></a> - how could it be done even better.                            
                         </li>
+                        <li>
+                            <a href="#Updates"><b>SW updates</b></a> - updates to the SW after the initial release.                            
+                        </li>
+                        
                     </ul>
                     <br/>                    
                 </td>
@@ -327,6 +332,8 @@ first version written by Jorma Kuha in July, 2020
 <tr style="text-align:left">
     <td>
         <div>
+ 
+            
             <!--
         <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
         <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
@@ -346,8 +353,35 @@ first version written by Jorma Kuha in July, 2020
         <br/>
     </td>   
 </tr>
+<!--          
+    *****************************
+    ** SW Updates
+    *****************************
+-->
+<tr>
+    <th style="text-align:center">
+      <p id="Updates" style=text-align:center;font-size:x-large>SW Updates:</p>
+    </th>
+</tr>                   
+<tr style="text-align:left">
+    <td>
+        <div>
+           <ul>
+                <li>
+                    Update in March, 2021: Updated so that the SW checks every two hours if the network is up. If not, it performs a SW reset and tries to connect to the network until it succeeds. The rationale for this is that even if the Wifi-router
+                    is just reset, the Arduino cannot connect to the internet until it establishes a new connection. You can download the Life Tracker -software version 1.1 <a href="LifeTracker_1_1.ino" download>from this link.</a>
+                    As usual, all Wifi-network information as well as the Prowl API keys are in a file "secrets.h" which is not distributed. 
+                </li>
+            </ul>            
+                
+          </div>                             
+        <br/>
+    </td>   
+</tr>
 
 
+                    
+                    
 <tr >  
     <th style="text-align:center">
         <!-- 
