@@ -707,6 +707,15 @@ var basicUrl = "https://script.google.com/macros/s/&lt;... PUT YOUR SCRIPT ID HE
         <img src="pillbox_3.jpg" alt="Smart Pillbox cover" title="Smart Pillbox cover" style="margin:5px;float:left;max-width:30%;height:auto">
         <img src="pillbox_1.jpg" alt="Smart Pillbox opened" title="Smart Pillbox opened" style="margin:5px;float:right;max-width:30%;height:auto">
         -->
+            
+        <br/>
+        <br/>
+            
+        Update on June 2021: The SSL Root certificate for Google on the Arduino expired, after six months since updating it. This became evident so that the Arduino couln't read from the Google-sheet anymore in a reliable manner (strangely, it did succeed every now and then though). Updating the SSL Root certificate was simple (load the firmware updater into it, update the certificate from the Firmawe Updater menu in the Arduino development environment, load back the Food Tracker-SW into Arudino) but this seems to be something you need to do every six months. If anyone has figured out how Arduino could update the certificate itself while in use (before the previous certificate expires), let me know!
+            
+        <br/>
+        <br/>            
+
         This is a demanding project, and it should definitely not be your first one with the Arduino. It would be a good idea to start with the spreadsheet-solution first, and even take it into use with the simple JavaScript-app executing in your PC or mobile. You should experiment with the weight scale, the led-matrix and the MCP21S17 via a breadboard-solution first, and only after that start to 
             place them into a bodystructure  which would evolve into your own Food Tracker. 
             
